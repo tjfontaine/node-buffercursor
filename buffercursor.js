@@ -56,7 +56,7 @@ BufferCursor.prototype.eof = function () {
 };
 
 BufferCursor.prototype.toByteArray = function (method) {
-  var arr = [], i, part, count;
+  var arr = [], i, part;
 
   if (!method) {
     method = 'readUInt8';
@@ -68,9 +68,7 @@ BufferCursor.prototype.toByteArray = function (method) {
   else if (method.indexOf('32') > 0)
     part = 4;
 
-  count = this.length / part;
-
-  for (i = 0; i < count; i++) {
+  for (i = 0; i < this.buffer.length; i += part) {
     arr.push(this.buffer[method](i));
   }
   return arr;
