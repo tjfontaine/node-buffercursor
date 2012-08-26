@@ -1,6 +1,6 @@
 {
   "name": "buffercursor",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "author": "Timothy J Fontaine <tjfontaine@gmail.com> (http://atxconsulting.com)",
   "description": "A simple way to traverse a Buffer like a cursor, updating position along the way",
   "keywords": [
