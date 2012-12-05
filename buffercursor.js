@@ -91,7 +91,7 @@ BufferCursor.prototype.tell = function() {
 BufferCursor.prototype.slice = function(length) {
   var end, b;
 
-  if (!length) {
+  if (length == undefined) {
     end = this.length;
   } else {
     end = this._pos + length;
@@ -106,7 +106,7 @@ BufferCursor.prototype.slice = function(length) {
 BufferCursor.prototype.toString = function(encoding, length) {
   var end, ret;
 
-  if (!length) {
+  if (length == undefined) {
     end = this.length;
   } else {
     end = this._pos + length;
@@ -132,7 +132,7 @@ BufferCursor.prototype.write = function(value, length, encoding) {
 BufferCursor.prototype.fill = function(value, length) {
   var end;
 
-  if (!length) {
+  if (length == undefined) {
     end = this.length;
   } else {
     end = this._pos + length;
