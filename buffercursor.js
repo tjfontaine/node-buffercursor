@@ -65,7 +65,7 @@ BufferCursor.prototype.eof = function() {
 };
 
 BufferCursor.prototype.toByteArray = function(method) {
-  var arr = [], i, part;
+  var arr = [], i, part, count;
 
   if (!method) {
     method = 'readUInt8';
@@ -77,10 +77,11 @@ BufferCursor.prototype.toByteArray = function(method) {
   else if (method.indexOf('32') > 0)
     part = 4;
 
+  count = this.length / part;
+
   for (i = 0; i < this.buffer.length; i += part) {
     arr.push(this.buffer[method](i));
   }
-
   return arr;
 };
 
@@ -91,7 +92,7 @@ BufferCursor.prototype.tell = function() {
 BufferCursor.prototype.slice = function(length) {
   var end, b;
 
-  if (!length) {
+  if (length === undefined) {
     end = this.length;
   } else {
     end = this._pos + length;
@@ -106,7 +107,7 @@ BufferCursor.prototype.slice = function(length) {
 BufferCursor.prototype.toString = function(encoding, length) {
   var end, ret;
 
-  if (!length) {
+  if (length === undefined) {
     end = this.length;
   } else {
     end = this._pos + length;
@@ -132,7 +133,7 @@ BufferCursor.prototype.write = function(value, length, encoding) {
 BufferCursor.prototype.fill = function(value, length) {
   var end;
 
-  if (!length) {
+  if (length === undefined) {
     end = this.length;
   } else {
     end = this._pos + length;
