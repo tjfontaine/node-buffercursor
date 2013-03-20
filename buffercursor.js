@@ -147,16 +147,16 @@ var defs = {
   reader: {
     1: ['readUInt8', 'readInt8'],
     2: ['readUInt16BE', 'readUInt16LE', 'readInt16BE', 'readInt16LE'],
-    4: ['readUInt32BE', 'readUInt32BE', 'readInt32BE', 'readInt32LE',
+    4: ['readUInt32BE', 'readUInt32LE', 'readInt32BE', 'readInt32LE',
         'readFloatBE', 'readFloatLE'],
     8: ['readDoubleBE', 'readDoubleLE']
   },
   writer: {
     1: ['writeUInt8', 'writeInt8'],
     2: ['writeUInt16BE', 'writeUInt16LE', 'writeInt16BE', 'writeInt16LE'],
-    4: ['writeUInt32BE', 'writeUInt32BE', 'writeInt32BE', 'writeInt32LE',
+    4: ['writeUInt32BE', 'writeUInt32LE', 'writeInt32BE', 'writeInt32LE',
         'writeFloatBE', 'writeFloatLE'],
-    8: ['writeDoubleBE', 'writeDoubleBE']
+    8: ['writeDoubleBE', 'writeDoubleLE']
   }
 };
 
