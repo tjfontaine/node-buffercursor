@@ -7,7 +7,8 @@ the proper size, which you can see through `.tell()` you can also
 `.seek()`
 
 ```javascript
-var bc = new BufferCursor(buffer);
+var buffercursor = require("buffercursor");
+var bc = new buffercursor.BufferCursor(buffer);
 bc.readUInt16BE();
 bc.readUInt8();
 bc.readUInt32BE();

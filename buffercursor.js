@@ -21,7 +21,7 @@
 var assert = require('assert');
 var util = require('util');
 
-var BufferCursor = module.exports = function(buff) {
+var BufferCursor = module.exports.BufferCursor = function(buff) {
   if (!(this instanceof BufferCursor))
     return new BufferCursor(buff);
 
