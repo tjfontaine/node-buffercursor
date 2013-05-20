@@ -21,11 +21,17 @@
 var assert = require('assert');
 var util = require('util');
 
-var BufferCursor = module.exports = function(buff) {
+var BufferCursor = module.exports = function(buff, noAssert) {
   if (!(this instanceof BufferCursor))
-    return new BufferCursor(buff);
+    return new BufferCursor(buff, noAssert);
 
   this._pos = 0;
+
+  this._noAssert = noAssert;
+
+  if (this._noAssert === undefined)
+    this._noAssert = true;
+
   this.buffer = buff;
   this.length = buff.length;
 };
@@ -40,19 +46,10 @@ BufferCursor.prototype._move = function(step) {
   this._pos += step;
 };
 
-BufferCursor.prototype._read = function(method, size) {
-  var ret = this.buffer[method](this._pos);
-  this._move(size);
-  return ret;
-};
-
-BufferCursor.prototype._write = function(value, method, size) {
+BufferCursor.prototype._checkWrite = function(size) {
   if (this._pos + size > this.length)
     throw new BCO();
-
-  this.buffer[method](value, this._pos);
-  this._move(size);
-};
+}
 
 BufferCursor.prototype.seek = function(pos) {
   assert(pos >= 0, 'Cannot seek behind 0');
@@ -143,39 +140,170 @@ BufferCursor.prototype.fill = function(value, length) {
   this.seek(end);
 };
 
-var defs = {
-  reader: {
-    1: ['readUInt8', 'readInt8'],
-    2: ['readUInt16BE', 'readUInt16LE', 'readInt16BE', 'readInt16LE'],
-    4: ['readUInt32BE', 'readUInt32LE', 'readInt32BE', 'readInt32LE',
-        'readFloatBE', 'readFloatLE'],
-    8: ['readDoubleBE', 'readDoubleLE']
-  },
-  writer: {
-    1: ['writeUInt8', 'writeInt8'],
-    2: ['writeUInt16BE', 'writeUInt16LE', 'writeInt16BE', 'writeInt16LE'],
-    4: ['writeUInt32BE', 'writeUInt32LE', 'writeInt32BE', 'writeInt32LE',
-        'writeFloatBE', 'writeFloatLE'],
-    8: ['writeDoubleBE', 'writeDoubleLE']
-  }
+BufferCursor.prototype.readUInt8 = function() {
+  var ret = this.buffer.readUInt8(this._pos, this._noAssert);
+  this._move(1);
+  return ret;
 };
 
-Object.keys(defs.reader).forEach(function(size) {
-  var arr = defs.reader[size];
-  var move = parseInt(size);
-  arr.forEach(function(method) {
-    BufferCursor.prototype[method] = function() {
-      return this._read(method, move);
-    };
-  });
-});
+BufferCursor.prototype.readInt8 = function() {
+  var ret = this.buffer.readInt8(this._pos, this._noAssert);
+  this._move(1);
+  return ret;
+};
 
-Object.keys(defs.writer).forEach(function(size) {
-  var arr = defs.writer[size];
-  var move = parseInt(size);
-  arr.forEach(function(method) {
-    BufferCursor.prototype[method] = function(value) {
-      return this._write(value, method, move);
-    };
-  });
-});
+BufferCursor.prototype.readInt16BE = function() {
+  var ret = this.buffer.readInt16BE(this._pos, this._noAssert);
+  this._move(2);
+  return ret;
+};
+
+BufferCursor.prototype.readInt16LE = function() {
+  var ret = this.buffer.readInt16LE(this._pos, this._noAssert);
+  this._move(2);
+  return ret;
+};
+
+BufferCursor.prototype.readUInt16BE = function() {
+  var ret = this.buffer.readUInt16BE(this._pos, this._noAssert);
+  this._move(2);
+  return ret;
+};
+
+BufferCursor.prototype.readUInt16LE = function() {
+  var ret = this.buffer.readUInt16LE(this._pos, this._noAssert);
+  this._move(2);
+  return ret;
+};
+
+BufferCursor.prototype.readUInt32LE = function() {
+  var ret = this.buffer.readUInt32LE(this._pos, this._noAssert);
+  this._move(4);
+  return ret;
+};
+
+BufferCursor.prototype.readUInt32BE = function() {
+  var ret = this.buffer.readUInt32BE(this._pos, this._noAssert);
+  this._move(4);
+  return ret;
+};
+
+BufferCursor.prototype.readInt32LE = function() {
+  var ret = this.buffer.readInt32LE(this._pos, this._noAssert);
+  this._move(4);
+  return ret;
+};
+
+BufferCursor.prototype.readInt32BE = function() {
+  var ret = this.buffer.readInt32BE(this._pos, this._noAssert);
+  this._move(4);
+  return ret;
+};
+
+BufferCursor.prototype.readFloatBE = function() {
+  var ret = this.buffer.readFloatBE(this._pos, this._noAssert);
+  this._move(4);
+  return ret;
+};
+
+BufferCursor.prototype.readFloatLE = function() {
+  var ret = this.buffer.readFloatLE(this._pos, this._noAssert);
+  this._move(4);
+  return ret;
+};
+
+BufferCursor.prototype.readDoubleBE = function() {
+  var ret = this.buffer.readDoubleBE(this._pos, this._noAssert);
+  this._move(8);
+  return ret;
+};
+
+BufferCursor.prototype.readDoubleLE = function() {
+  var ret = this.buffer.readDoubleLE(this._pos, this._noAssert);
+  this._move(8);
+  return ret;
+};
+
+BufferCursor.prototype.writeUInt8 = function(value) {
+  this._checkWrite(1);
+  this.buffer.writeUInt8(value, this._pos, this._noAssert);
+  this._move(1);
+};
+
+BufferCursor.prototype.writeUInt8 = function(value) {
+  this._checkWrite(1);
+  this.buffer.writeUInt8(value, this._pos, this._noAssert);
+  this._move(1);
+};
+
+BufferCursor.prototype.writeUInt16BE = function(value) {
+  this._checkWrite(2);
+  this.buffer.writeUInt16BE(value, this._pos, this._noAssert);
+  this._move(2);
+};
+
+BufferCursor.prototype.writeUInt16LE = function(value) {
+  this._checkWrite(2);
+  this.buffer.writeUInt16LE(value, this._pos, this._noAssert);
+  this._move(2);
+};
+
+BufferCursor.prototype.writeInt16BE = function(value) {
+  this._checkWrite(2);
+  this.buffer.writeInt16BE(value, this._pos, this._noAssert);
+  this._move(2);
+};
+
+BufferCursor.prototype.writeInt16LE = function(value) {
+  this._checkWrite(2);
+  this.buffer.writeInt16LE(value, this._pos, this._noAssert);
+  this._move(2);
+};
+
+BufferCursor.prototype.writeUInt32BE = function(value) {
+  this._checkWrite(4);
+  this.buffer.writeUInt32BE(value, this._pos, this._noAssert);
+  this._move(4);
+};
+
+BufferCursor.prototype.writeUInt32LE = function(value) {
+  this._checkWrite(4);
+  this.buffer.writeUInt32LE(value, this._pos, this._noAssert);
+  this._move(4);
+};
+
+BufferCursor.prototype.writeInt32BE = function(value) {
+  this._checkWrite(4);
+  this.buffer.writeInt32BE(value, this._pos, this._noAssert);
+  this._move(4);
+};
+
+BufferCursor.prototype.writeInt32LE = function(value) {
+  this._checkWrite(4);
+  this.buffer.writeInt32LE(value, this._pos, this._noAssert);
+  this._move(4);
+};
+
+BufferCursor.prototype.writeFloatBE = function(value) {
+  this._checkWrite(4);
+  this.buffer.writeFloatBE(value, this._pos, this._noAssert);
+  this._move(4);
+};
+
+BufferCursor.prototype.writeFloatLE = function(value) {
+  this._checkWrite(4);
+  this.buffer.writeFloatLE(value, this._pos, this._noAssert);
+  this._move(4);
+};
+
+BufferCursor.prototype.writeDoubleBE = function(value) {
+  this._checkWrite(8);
+  this.buffer.writeDoubleBE(value, this._pos, this._noAssert);
+  this._move(8);
+};
+
+BufferCursor.prototype.writeDoubleLE = function(value) {
+  this._checkWrite(8);
+  this.buffer.writeDoubleLE(value, this._pos, this._noAssert);
+  this._move(8);
+};
