@@ -233,9 +233,9 @@ BufferCursor.prototype.writeUInt8 = function(value) {
   return this;
 };
 
-BufferCursor.prototype.writeUInt8 = function(value) {
+BufferCursor.prototype.writeInt8 = function(value) {
   this._checkWrite(1);
-  this.buffer.writeUInt8(value, this._pos, this._noAssert);
+  this.buffer.writeInt8(value, this._pos, this._noAssert);
   this._move(1);
   return this;
 };
