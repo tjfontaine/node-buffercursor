@@ -19,5 +19,8 @@
   "main": "buffercursor.js",
   "engines": {
     "node": ">= 0.5.0"
+  },
+  "dependencies": {
+    "verror": "^1.4.0"
   }
 }
