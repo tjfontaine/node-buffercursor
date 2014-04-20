@@ -18,7 +18,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE
 
-var assert = require('assert');
 var util = require('util');
 var VError = require('verror');
 
@@ -43,7 +42,7 @@ var BCO = BufferCursor.BufferCursorOverflow = function() {
 util.inherits(BCO, VError);
 
 BufferCursor.prototype._move = function(step) {
-  assert(this._pos + step <= this.buffer.length, 'Cannot read beyond buffer');
+  this._checkWrite(step);
   this._pos += step;
 };
 
@@ -73,8 +72,15 @@ BufferCursor.prototype._checkWrite = function(size) {
 }
 
 BufferCursor.prototype.seek = function(pos) {
-  assert(pos >= 0, 'Cannot seek behind 0');
-  assert(pos <= this.buffer.length, 'Cannot seek beyond buffer length');
+  if (pos < 0)
+    throw new VError(new RangeError('Cannot seek before start of buffer'),
+                     'Negative seek values not allowed: %d', pos);
+
+  if (pos > this.length)
+    throw new VError(new RangeError('Trying to seek beyond buffer'),
+                     'Requested %d position is beyond length %d',
+                     pos, this.length);
+
   this._pos = pos;
   return this;
 };
