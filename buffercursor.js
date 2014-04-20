@@ -20,6 +20,7 @@
 
 var assert = require('assert');
 var util = require('util');
+var VError = require('verror');
 
 var BufferCursor = module.exports = function(buff, noAssert) {
   if (!(this instanceof BufferCursor))
@@ -37,9 +38,9 @@ var BufferCursor = module.exports = function(buff, noAssert) {
 };
 
 var BCO = BufferCursor.BufferCursorOverflow = function() {
-  Error.apply(this, Array.prototype.slice(arguments));
+  VError.apply(this, Array.prototype.slice.call(arguments, 0));
 };
-util.inherits(BCO, Error);
+util.inherits(BCO, VError);
 
 BufferCursor.prototype._move = function(step) {
   assert(this._pos + step <= this.buffer.length, 'Cannot read beyond buffer');
@@ -47,8 +48,17 @@ BufferCursor.prototype._move = function(step) {
 };
 
 BufferCursor.prototype._checkWrite = function(size) {
-  if (this._pos + size > this.length)
-    throw new BCO();
+  if (this._pos + size > this.length) {
+    var bco = new BCO('BufferCursorOverflow: length %d, position %d, size %d',
+                      this.length,
+                      this._pos,
+                      size);
+    bco.kind = 'BufferCursorOverflow';
+    bco.length = this.length;
+    bco.position = this.position;
+    bco.size = size;
+    throw bco;
+  }
 }
 
 BufferCursor.prototype.seek = function(pos) {
