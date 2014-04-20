@@ -48,14 +48,25 @@ BufferCursor.prototype._move = function(step) {
 };
 
 BufferCursor.prototype._checkWrite = function(size) {
-  if (this._pos + size > this.length) {
+  var shouldThrow = false;
+
+  var length = this.length;
+  var pos = this._pos;
+
+  if (size > length)
+    shouldThrow = true;
+
+  if (length - pos < size)
+    shouldThrow = true;
+
+  if (shouldThrow) {
     var bco = new BCO('BufferCursorOverflow: length %d, position %d, size %d',
-                      this.length,
-                      this._pos,
+                      length,
+                      pos,
                       size);
     bco.kind = 'BufferCursorOverflow';
-    bco.length = this.length;
-    bco.position = this.position;
+    bco.length = length;
+    bco.position = pos;
     bco.size = size;
     throw bco;
   }
