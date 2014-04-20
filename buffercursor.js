@@ -141,6 +141,9 @@ BufferCursor.prototype.toString = function(encoding, length) {
   return ret;
 };
 
+// This method doesn't need to _checkWrite because Buffer implicitly truncates
+// to the length of the buffer, it's the only method in Node core that behaves
+// this way by default
 BufferCursor.prototype.write = function(value, length, encoding) {
   var end, ret;
 
@@ -157,6 +160,8 @@ BufferCursor.prototype.fill = function(value, length) {
   } else {
     end = this._pos + length;
   }
+
+  this._checkWrite(end - this._pos);
 
   this.buffer.fill(value, this._pos, end);
   this.seek(end);
