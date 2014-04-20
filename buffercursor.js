@@ -36,8 +36,16 @@ var BufferCursor = module.exports = function(buff, noAssert) {
   this.length = buff.length;
 };
 
-var BCO = BufferCursor.BufferCursorOverflow = function() {
-  VError.apply(this, Array.prototype.slice.call(arguments, 0));
+var BCO = BufferCursor.BufferCursorOverflow = function(length, pos, size) {
+  this.kind = 'BufferCursorOverflow';
+  this.length = length;
+  this.position = pos;
+  this.size = size;
+  VError.call(this,
+              'BufferCursorOverflow: length %d, position %d, size %d',
+              length,
+              pos,
+              size);
 };
 util.inherits(BCO, VError);
 
@@ -59,14 +67,9 @@ BufferCursor.prototype._checkWrite = function(size) {
     shouldThrow = true;
 
   if (shouldThrow) {
-    var bco = new BCO('BufferCursorOverflow: length %d, position %d, size %d',
-                      length,
+    var bco = new BCO(length,
                       pos,
                       size);
-    bco.kind = 'BufferCursorOverflow';
-    bco.length = length;
-    bco.position = pos;
-    bco.size = size;
     throw bco;
   }
 }
