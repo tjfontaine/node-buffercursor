@@ -177,6 +177,25 @@ BufferCursor.prototype.fill = function(value, length) {
   return this;
 };
 
+// This prototype is not entirely like the upstream Buffer.copy, instead it
+// is the target buffer, and accepts the source buffer -- since the target
+// buffer knows its starting position
+BufferCursor.prototype.copy = function copy(source, sourceStart, sourceEnd) {
+  if (isNaN(sourceEnd))
+    sourceEnd = source.length;
+
+  if (isNaN(sourceStart))
+    sourceStart = 0;
+
+  var length = sourceEnd - sourceStart;
+
+  this._checkWrite(length);
+
+  source.copy(this.buffer, this._pos, sourceStart, sourceEnd);
+  this._move(length);
+  return this;
+};
+
 BufferCursor.prototype.readUInt8 = function() {
   var ret = this.buffer.readUInt8(this._pos, this._noAssert);
   this._move(1);
