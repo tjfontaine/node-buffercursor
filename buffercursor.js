@@ -181,17 +181,26 @@ BufferCursor.prototype.fill = function(value, length) {
 // is the target buffer, and accepts the source buffer -- since the target
 // buffer knows its starting position
 BufferCursor.prototype.copy = function copy(source, sourceStart, sourceEnd) {
+  var sBC = source instanceof BufferCursor;
+
   if (isNaN(sourceEnd))
     sourceEnd = source.length;
 
-  if (isNaN(sourceStart))
-    sourceStart = 0;
+  if (isNaN(sourceStart)) {
+    if (sBC)
+      sourceStart = source._pos;
+    else
+      sourceStart = 0;
+  }
 
   var length = sourceEnd - sourceStart;
 
   this._checkWrite(length);
 
-  source.copy(this.buffer, this._pos, sourceStart, sourceEnd);
+  var buf = sBC ? source.buffer : source;
+
+  buf.copy(this.buffer, this._pos, sourceStart, sourceEnd);
+
   this._move(length);
   return this;
 };
