@@ -21,6 +21,6 @@
     "node": ">= 0.5.0"
   },
   "dependencies": {
-    "verror": "^1.4.0"
+    "verror": "~1.4.0"
   }
 }
