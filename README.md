@@ -1,3 +1,4 @@
+[![build status](https://secure.travis-ci.org/tjfontaine/node-buffercursor.png)](http://travis-ci.org/tjfontaine/node-buffercursor)
 BufferCursor
 ============
 
